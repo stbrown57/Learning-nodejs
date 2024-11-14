@@ -1,0 +1,17 @@
+{
+  "name": "student-labels",
+  "version": "1.0.0",
+  "description": "The asset management system generates a \"Student Listing Report\" that outputs a CSV file. The schema includes the \"studentID, First, Middle, Last (names), Grade, Homeroom, and Student E-Mail\". The export seems to be too smart by half, by adding formating to set the field types. Student ID, Grade and Homeroom wrap the data in quotes and precede the values with an equal sign \"=\". I beleve this is done to signify alpha fields for data that appears to be numberic. Perhapes this syntax is uesed for Excel, but it does not seem to be generaly excepted with Javascript libraries without some wrangling. ChatGPT AI suggestes a few [methods](./Docs/AI-Parse-CSV.md) for ingessting the data.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv": "^6.3.10",
+    "sqlite3": "^5.1.7"
+  }
+}

@@ -16,4 +16,5 @@ Both SQLite and DuckDB have node.js modules that can create and query databases.
 
 Start out with [SQLite](.\Docs\AI-Ingest-CSV-data-into-SQLite-DB.md) since inporting and creating a database appears to be similar between the two, and SQLite has been around forever and is used everywhere.  
 
-...Whait a minute, maybe I can inport the [DuckDBClient library](https://observablehq.com/framework/lib/duckdb) 
+...Whait a minute, maybe I can inport the [DuckDBClient library](https://observablehq.com/framework/lib/duckdb), but SQLite has a module provided my node.js
+
