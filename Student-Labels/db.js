@@ -1,6 +1,6 @@
 import fs from 'fs';
 import sqlite3 from "sqlite3";
-const filepath = './scps.db';
+const filepath = './scps.sqlite';
 
 export function connectToDatabase() {
   if (fs.existsSync(filepath)) {
