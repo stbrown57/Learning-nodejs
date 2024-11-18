@@ -1,24 +1,24 @@
-import * as duckdb from "duckdb";
-import * as d3 from "d3";
-import * as fs from 'fs';
-import {csv} from 'd3-fetch';
+import duckdb from "duckdb";
+import * as fs from "fs";
 
-const csvContent = fs.readFileSync("ComputerADList.csv", "utf8"); // Read file content
+const db = new duckdb.Database("computerAD.duckdb");
 
-//d3-dsv may parse with transformations
-//const data = d3.csvParse(csvContent); // Parse the content with d3.csvParse
+async function copyCSVToDuckDB(csvFilePath, tableName) {
+  try {
+    // Create the table (no need for explicit connection)
+    const createTableQuery = `CREATE TABLE IF NOT EXISTS ${tableName} AS SELECT * FROM read_csv_auto('${csvFilePath}')`;
+    await db.exec(createTableQuery); // Use db.exec()
 
-const data = await d3.dsv(",", "file:///Users/stbrown/Development/Learning-nodejs/Assets/ComputerADList.csv", (d) => {
-    return {
-      name: d.Name,
-      customHardwareModel: d.CustomHardwareModel,
-      OperatingSystem: d.OperatingSystem,
-      OperatingSystemVersion: d.OperatingSystemVersion,
-      description: d.Description,
-      lastLoggedOnUser: d.customLastLoggedOnUser,
-      lastLoggedOnUserDate: Date(d.customLastLoggedOnUserDate),
-      serialNumber: d.serialNumber,
-      DistinguishedName: d.DistiguishedName
-    };
-  });
-console.log(data);
+    console.log(`Data from ${csvFilePath} copied to table ${tableName}`);
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+// ... rest of your code
+
+// Example usage
+const csvFile = "ComputerADList.csv";
+const targetTable = "computer";
+
+copyCSVToDuckDB(csvFile, targetTable);
