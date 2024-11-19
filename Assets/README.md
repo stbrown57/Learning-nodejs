@@ -9,10 +9,4 @@ The current file "laptopSCPS.tsv" was created using the GUI "Active Directory Us
 
 ![Computer OU structure](./images/Computer-OU.png)
 
-It would make sense to use PowerShell to query the AD, but I get this:
-```
-.\Get-LaptopAD.ps1
-.\Get-LaptopAD.ps1: File H:\Development\Learning-nodejs\Assets\Get-LaptopAD.ps1 cannot be loaded because its operation is blocked by software restriction policies, such as those created by using Group Policy.
-```
-
-I could do this last year, oh well.
+After installing the RSAT module on the laptop, the PowerShell script "Get-LaptopAD.ps1" was modified to collect information on all staff computers in the Elementary OU. It took about one to two minutes I believe.

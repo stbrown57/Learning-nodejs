@@ -1,9 +1,9 @@
 import duckdb from "duckdb";
 import * as fs from "fs";
 
-const db = new duckdb.Database("computerAD.duckdb");
+const db = new duckdb.Database("scps.duckdb");
 
-async function copyCSVToDuckDB(csvFilePath, tableName) {
+export async function copyCSVToDuckDB(csvFilePath, tableName) {
   try {
     // Create the table (no need for explicit connection)
     const createTableQuery = `CREATE TABLE IF NOT EXISTS ${tableName} AS SELECT * FROM read_csv_auto('${csvFilePath}')`;
@@ -14,11 +14,3 @@ async function copyCSVToDuckDB(csvFilePath, tableName) {
     console.error("Error:", err);
   }
 }
-
-// ... rest of your code
-
-// Example usage
-const csvFile = "ComputerADList.csv";
-const targetTable = "computer";
-
-copyCSVToDuckDB(csvFile, targetTable);
