@@ -1,20 +1,15 @@
 {
-  "name": "barcode-pdf",
+  "name": "test3",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "barcode-generator": "^0.1.0",
-    "canvas": "^2.11.2",
-    "jsbarcode": "^3.11.6",
-    "jspdf": "^2.5.2",
-    "node-barcode": "^1.0.0"
+    "@bwip-js/node": "^4.5.1"
   }
 }

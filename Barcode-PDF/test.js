@@ -1,86 +1,51 @@
 /**
- * Script to generate a PDF document containing barcodes formatted for Avery 5160 labels
- * Uses [JSBarcode](https://www.npmjs.com/package/jsbarcode) for barcode generation 
- * and [jsPDF](https://www.npmjs.com/package/jspdf) for PDF creation
+ * Script to generate a PDF document containing multiple barcodes with automatic pagination
+ * Uses [JSBarcode](https://www.npmjs.com/package/barcode-generator) for barcode generation and [jsPDF](https://www.npmjs.com/package/jspdf) for PDF creation
  * 
- * Avery 5160 Specifications:
- * - Labels per page: 30 (3 across, 10 down)
- * - Label size: 2.625" x 1" (189 x 72 points)
- * - Page margins: 0.5" top/bottom, 0.219" sides (36/15.8 points)
- * 
- * @requires jsbarcode
+ * @requires barcode-generator
  * @requires jspdf
- * @requires canvas
  */
 
-const Canvas = require('canvas');
-const JsBarcode = require('jsbarcode');
-const { jsPDF } = require('jspdf');
+import JSBarcode from 'barcode-generator';
+import { jsPDF } from 'jspdf';
 
-// Array of barcode data objects
-const barcodeDataArray = [
-  { code: '2186577', line1: 'Joseph Taylor', line2: 'Homeroom: 14' },
-  { code: '2190021', line1: 'Xavire Smith', line2: 'Homeroom: 14' },
-  { code: '2188756', line1: 'Micole Alexander', line2: 'Homeroom: 14'}
-  // Add more items as needed
-];
-
+// Array of barcode data
+const barcodeDataArray = ['BARCODE1', 'BARCODE2', 'BARCODE3', 'BARCODE4', 'BARCODE5', 'BARCODE6'];
 const barcodeOptions = {
   format: 'CODE128',
-  width: 1.5,
-  height: 15,        // Reduced height to accommodate text
-  displayValue: false,
-  fontSize: 8
+  width: 2,
+  height: 30,
+  displayValue: true
 };
 
-// Create new PDF document (US Letter size)
-const doc = new jsPDF({
-  format: 'letter',
-  unit: 'pt'
-});
+// Create new PDF document
+const doc = new jsPDF();
 
-// Avery 5160 layout constants
-const labelWidth = 189;
-const labelHeight = 72;
-const marginTop = 36;
-const marginLeft = 15.8;
-const colGap = 15.8;
-const labelsPerRow = 3;
-const labelsPerCol = 10;
+// Constants for page layout
+const pageHeight = doc.internal.pageSize.height;
+const barcodeHeight = 50; // Total height needed for each barcode including spacing
+const marginTop = 10;
 
-barcodeDataArray.forEach((data, index) => {
-  // Calculate position
-  const col = index % labelsPerRow;
-  const row = Math.floor(index / labelsPerRow) % labelsPerCol;
-  const page = Math.floor(index / (labelsPerRow * labelsPerCol));
+// Generate and add multiple barcodes
+barcodeDataArray.forEach((barcodeData, index) => {
+  // Calculate Y position for current barcode
+  const yPosition = marginTop + (index * barcodeHeight);
   
-  // Add new page if needed
-  if (index > 0 && index % (labelsPerRow * labelsPerCol) === 0) {
+  // Check if we need a new page
+  if (yPosition + barcodeHeight > pageHeight) {
     doc.addPage();
+    // Reset the index for the new page
+    const newIndex = index % Math.floor((pageHeight - marginTop) / barcodeHeight);
+    const newYPosition = marginTop + (newIndex * barcodeHeight);
+    
+    const barcodeImage = JSBarcode.draw(barcodeData, barcodeOptions);
+    doc.addImage(barcodeImage, 'JPEG', 10, newYPosition, 100, 30);
+    doc.text(`Barcode ${index + 1}: ${barcodeData}`, 10, newYPosition + 35);
+  } else {
+    const barcodeImage = JSBarcode.draw(barcodeData, barcodeOptions);
+    doc.addImage(barcodeImage, 'JPEG', 10, yPosition, 100, 30);
+    doc.text(`Barcode ${index + 1}: ${barcodeData}`, 10, yPosition + 35);
   }
-  
-  // Calculate x and y positions for current label
-  const xPos = marginLeft + (col * (labelWidth + colGap));
-  const yPos = marginTop + (row * labelHeight);
-  
-  // Create canvas for barcode
-  const canvas = new Canvas.createCanvas();
-  JsBarcode(canvas, data.code, barcodeOptions);
-  
-  // Add text lines
-  doc.setFontSize(8);
-  doc.text(data.line1, xPos + 5, yPos + 10);
-  doc.text(data.line2, xPos + 5, yPos + 20);
-  
-  // Add barcode
-  doc.addImage(
-    canvas.toBuffer(), 
-    'PNG', 
-    xPos + 5, 
-    yPos + 25,     // Positioned below the text lines
-    labelWidth - 10, 
-    30
-  );
 });
 
-doc.save('avery5160_barcodes.pdf');
+doc.save('multiple_barcodes.pdf');
